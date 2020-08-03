@@ -18,13 +18,23 @@ function ga {
     & git add $args
 }
 
-function gcm ([string] $arg1) { 
-    $full_branch_name = git rev-parse --abbrev-ref HEAD
+function gitc { 
+    param ($m)
+    if ($null -eq $m) {
+        read-host -Prompt "Add your commit message: "
+    }
+    $full_branch_name = & git rev-parse --abbrev-ref HEAD
     $regex = "(ASX-([0-9]{3,5}))";
     $asx_and_task_number = ($full_branch_name -split $regex)[1]
-    $task_number_and_commit_message = $asx_and_task_number + ": " + $arg1;
-    & git commit -am $task_number_and_commit_message
-};
+    $final_commit_message;
+    if ($null -eq $asx_and_task_number) {
+        $final_commit_message = $m;
+    }
+    else {
+        $final_commit_message = $asx_and_task_number + ": " + $m;
+    }
+    & git commit -am $final_commit_message;
+}
 
 function gb { 
     & git branch $args 
